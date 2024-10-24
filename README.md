@@ -20,7 +20,7 @@
 ### Identified Issues
 
 1. **[Inappropriate Datatypes]**
-   - Description: [When the messy dataset is generated, its data types are:
+   - Description: [When the messy dataset is generated, its data types are
                   
                   income_group -> object
                   age -> float
@@ -33,7 +33,7 @@
                   the datatypes of each column and converted year and population's data types to
                   float itself. Therefore, I do not have to perform any coercions.]
    - Affected Column(s): [year and population]
-   - Example: [When running: 
+   - Example: [When running 
               
               print("\nMessy dataset info:")
               print(df_messy.info())
