@@ -50,44 +50,110 @@
               
               This shows that year and population are of type object.] 
 
-   - Potential Impact: [If pandas had not automatically converted the data types of year and populatin from object to float,
-                        it would not be possible to find their statistical summaries. We cannot find stats such as mean or
-                        standard deviation if we are using a column that is of type object and not int/float.]
+   - Potential Impact: [If pandas had not automatically converted the data types of year and populatin from object to float, it would not be possible to find their statistical summaries. We cannot find stats such as mean or standard deviation if we are using a column that is of type object and not int/float.]
 
 2. **[Duplicate Values]**
-   - Description: [Detailed description of the issue]
-   - Affected Column(s): [List of columns]
-   - Example: [Specific example from the dataset]
-   - Potential Impact: [How this could affect analysis if left uncleaned]
+   - Description: [All columns have numerous duplicated values.]
+   - Affected Column(s): [income_groups, age, gender, year, population]
+   - Example: [When looking for the count of duplicates for each column, you get the following output
+                  
+                  for column in df.columns:
+                     dupVals = df[column].duplicated().sum()
+                     print(f"Duplicate values in '{column}': {dupVals}")
+
+                  # Duplicate values in 'income_groups': 125709
+                  # Duplicate values in 'age': 125616
+                  # Duplicate values in 'gender': 125714
+                  # Duplicate values in 'year': 125548
+                  # Duplicate values in 'population': 10792]
+   - Potential Impact: [duplicate values can skew statistical measurement such as mean or standard deviation, in turn, misrepresenting the dataset.]
 
 3. **[Missing Values]**
-   - Description: [Detailed description of the issue]
-   - Affected Column(s): [List of columns]
-   - Example: [Specific example from the dataset]
-   - Potential Impact: [How this could affect analysis if left uncleaned]
+   - Description: [All columns have multiple missing values, denoted by Nan or the value is actually missing.]
+   - Affected Column(s): [income_groups, age, gender, year, population]
+   - Example: [When looking for the count of missing values for each column, you get the following output
+               
+               for column in df.columns:
+                  nullVals = df[column].isnull().sum()
+                  print(f"Missing values in '{column}': {nullVals}")
+
+               # Missing values in 'income_groups': 6306
+               # Missing values in 'age': 6223
+               # Missing values in 'gender': 5907
+               # Missing values in 'year': 6202
+               # Missing values in 'population': 6340]
+
+   - Potential Impact: [Missing values can reduce the amount of valid data to use for analysis which can 
+reduce the impact of the results from analysis. It could also cause us to draw innacurate statistical measurements becuase of data distortion.]
 
 4. **[Outliers]**
-   - Description: [Detailed description of the issue]
-   - Affected Column(s): [List of columns]
-   - Example: [Specific example from the dataset]
-   - Potential Impact: [How this could affect analysis if left uncleaned]
+   - Description: [The population column has many outliers. ]
+   - Affected Column(s): [Population]
+   - Example: [When looking for the number of outliers in the population column after calculating the IQR
+   
+               # plot boxplot of population to view outliers 
+               x = sns.boxplot(df['population'])
+               plt.savefig("boxplot.png")
+
+               # Print number of outliers in population column 
+               Q1 = df['population'].quantile(0.25)
+               Q3 = df['population'].quantile(0.75)
+               IQR = Q3 - Q1
+               print(f"Number of outliers: {IQR}") 
+
+               # Number of outliers: 12347861.5 
+               
+               We can see that there is a very large number of outliers for the population column.]
+   - Potential Impact: [If the outliers are left in the dataset, it will skew the results of the analysis.   
+If outliers are left in, extreme datapoints can create misleading representation of the data.]
 
 5. **[Inconsistencies]**
-   - Description: [Detailed description of the issue]
-   - Affected Column(s): [List of columns]
-   - Example: [Specific example from the dataset]
-   - Potential Impact: [How this could affect analysis if left uncleaned]
+   - Description: [There are many naming inconsistences for the income_groups column and a 3rd option in the  
+                  gender column when its only valid options for male and female are 1 and 2.]
+   - Affected Column(s): [income_groups, gender]
+   - Example: [When looking at the unique values of the income_groups and gender columns
+               
+               IG_unique_values = df['income_groups'].unique()
+               print(f'Unique values of income groups: {IG_unique_values}') # shows us there are values with an inconsistent suffix _typo 
+
+               # Unique values of income groups: 
+               # ['high_income' 
+               # nan 
+               # 'high_income_typo' 
+               # 'low_income' 
+               # 'low_income_typo'
+               # 'lower_middle_income' 
+               # 'lower_middle_income_typo'
+               # 'upper_middle_income_typo' 
+               # 'upper_middle_income']
+
+               typo_count = df['income_groups'].str.endswith('_typo').sum() # sums all values with _typo suffix
+               print(f"Number of values with inconsistent suffix: {typo_count}") 
+               # there are 5959 values with the _typo suffix that should be removed
+               # Number of values with inconsistent suffix: 5959
+               
+               # Check inconsistencies in Gender Column
+               Gender_unique_values = df['gender'].unique()
+               print(f'Unique value of gender: {Gender_unique_values}') # shows us there is a value of 3 when there should only be 1 and 2
+               # Unique value of gender: [ 1.  3. nan  2.]
+
+               count3s = df['gender'].value_counts()[3]
+               print(f'Number of 3s: {count3s}') 
+               # Number of 3s: 6286
+               
+               From this we can see that there are 5959 values in the income_groups column with the _typo suffix. We can also see that there are 3 different options for gender, not including nan. There are 6286 3s in the gender column.]
+   - Potential Impact: [In this case, becuase there is innacurate naming of the values in the column, there would be inaccurate grouping of the values. Lack of standardization would make it harder to model the data as well.]
 
 6. **[Impossible Dates]**
-   - Description: [Detailed description of the issue]
-   - Affected Column(s): [List of columns]
-   - Example: [Specific example from the dataset]
-   - Potential Impact: [How this could affect analysis if left uncleaned]
-[Add more issues as needed]
+   - Description: [The year column has years that are past 2024 which would be impossible since that data cannot have been collected yet.]
+   - Affected Column(s): [year]
+   - Example: [year]
+   - Potential Impact: [Having values of dates that are past the present date would cause innacurate measurements as that data could not have been collected yet. There would also be issues with data projection since there may be an inaccurate representation of future data.]
+
 
 ## 2. Data Cleaning Process
 
-### Issue 1: [Issue Name]
+### Issue 1: [Inappropriate Datatypes]
 - **Cleaning Method**: [Describe your approach]
 - **Implementation**:
   ```python
@@ -98,8 +164,60 @@
   - Rows affected: [Number]
   - Data distribution change: [Describe any significant changes]
 
-### Issue 2: [Next Issue]
-- ...
+### Issue 2: [Duplicate Values]
+- **Cleaning Method**: [Describe your approach]
+- **Implementation**:
+  ```python
+  # Include relevant code snippet
+  ```
+- **Justification**: [Duplicate Values]
+- **Impact**: 
+  - Rows affected: [Number]
+  - Data distribution change: [Describe any significant changes]
+
+### Issue 3: [Missing Values]
+- **Cleaning Method**: [Describe your approach]
+- **Implementation**:
+  ```python
+  # Include relevant code snippet
+  ```
+- **Justification**: [Duplicate Values]
+- **Impact**: 
+  - Rows affected: [Number]
+  - Data distribution change: [Describe any significant changes]
+
+### Issue 4: [Outliers]
+- **Cleaning Method**: [Describe your approach]
+- **Implementation**:
+  ```python
+  # Include relevant code snippet
+  ```
+- **Justification**: [Duplicate Values]
+- **Impact**: 
+  - Rows affected: [Number]
+  - Data distribution change: [Describe any significant changes]
+
+### Issue 5: [Inconsistencies]
+- **Cleaning Method**: [Describe your approach]
+- **Implementation**:
+  ```python
+  # Include relevant code snippet
+  ```
+- **Justification**: [Duplicate Values]
+- **Impact**: 
+  - Rows affected: [Number]
+  - Data distribution change: [Describe any significant changes]
+
+### Issue 6: [Impossible Dates]
+- **Cleaning Method**: [Describe your approach]
+- **Implementation**:
+  ```python
+  # Include relevant code snippet
+  ```
+- **Justification**: [Duplicate Values]
+- **Impact**: 
+  - Rows affected: [Number]
+  - Data distribution change: [Describe any significant changes]
 
 
 ## 3. Final State Analysis
