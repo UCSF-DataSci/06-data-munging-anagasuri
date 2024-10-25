@@ -153,29 +153,18 @@ If outliers are left in, extreme datapoints can create misleading representation
 
 ## 2. Data Cleaning Process
 
-### Issue 1: [Inappropriate Datatypes]
-- **Cleaning Method**: [Describe your approach]
+### Issue 1: [Duplicate Values]
+- **Cleaning Method**: [Use .drop_duplicates() to drop duplicate values for specified columns]
 - **Implementation**:
   ```python
-  # Include relevant code snippet
+  df = df.drop_duplicates(subset=['income_groups', 'age', 'gender', 'year', 'population'], keep=False)
   ```
-- **Justification**: [Explain why you chose this method]
+- **Justification**: [Since these values were duplicated and we still have 1 copy of them, dropping the extra would make more sense than replacing them.]
 - **Impact**: 
-  - Rows affected: [Number]
-  - Data distribution change: [Describe any significant changes]
+  - Rows affected: [FILL OUT]
+  - Data distribution change: [Removing duplicates reduces the size of the dataset. It could change statistical measures such as mean and median becuase extreme values will no longer be disproportionately represented. Categorical variables will be affected as well because the frequency of value will change. This affects the mode of that variable.]
 
-### Issue 2: [Duplicate Values]
-- **Cleaning Method**: [Describe your approach]
-- **Implementation**:
-  ```python
-  # Include relevant code snippet
-  ```
-- **Justification**: [Duplicate Values]
-- **Impact**: 
-  - Rows affected: [Number]
-  - Data distribution change: [Describe any significant changes]
-
-### Issue 3: [Missing Values]
+### Issue 2: [Missing Values]
 - **Cleaning Method**: [Describe your approach]
 - **Implementation**:
   ```python
@@ -186,7 +175,7 @@ If outliers are left in, extreme datapoints can create misleading representation
   - Rows affected: [Number]
   - Data distribution change: [Describe any significant changes]
 
-### Issue 4: [Outliers]
+### Issue 3: [Outliers]
 - **Cleaning Method**: [Describe your approach]
 - **Implementation**:
   ```python
@@ -197,7 +186,7 @@ If outliers are left in, extreme datapoints can create misleading representation
   - Rows affected: [Number]
   - Data distribution change: [Describe any significant changes]
 
-### Issue 5: [Inconsistencies]
+### Issue 4: [Inconsistencies]
 - **Cleaning Method**: [Describe your approach]
 - **Implementation**:
   ```python
@@ -208,7 +197,7 @@ If outliers are left in, extreme datapoints can create misleading representation
   - Rows affected: [Number]
   - Data distribution change: [Describe any significant changes]
 
-### Issue 6: [Impossible Dates]
+### Issue 5: [Impossible Dates]
 - **Cleaning Method**: [Describe your approach]
 - **Implementation**:
   ```python
