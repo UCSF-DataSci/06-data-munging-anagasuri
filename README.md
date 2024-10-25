@@ -165,37 +165,59 @@ If outliers are left in, extreme datapoints can create misleading representation
   - Data distribution change: [Removing duplicates reduces the size of the dataset. It could change statistical measures such as mean and median becuase extreme values will no longer be disproportionately represented. Categorical variables will be affected as well because the frequency of value will change. This affects the mode of that variable.]
 
 ### Issue 2: [Missing Values]
-- **Cleaning Method**: [Describe your approach]
+- **Cleaning Method**: [Firstly, select the columns that have the float data type. Then replace all the missing values with the median of the column. 
+For the objec type column, income_group, we fill the missing values with 'unknown' instead of imputing since it is not a category we can assume the values of.]
 - **Implementation**:
   ```python
-  # Include relevant code snippet
+  floatType = df.select_dtypes(include=['float64']).columns 
+  df[floatType] = df[floatType].fillna(df[floatType].median()) 
+
+  objectType = df.select_dtypes(include=['object']).columns 
+  df[objectType] = df[floatType].fillna('unknown')
   ```
-- **Justification**: [Duplicate Values]
+- **Justification**: [This is best way to fill in missing values for float type columns becuase by using the median value, we are not contributing to any data skewing. 
+Similarly, when filling in the missing values of the object type column, rather than creating more NA values, we replace missing values with 'unknown' rather than incorrectly
+assuming the person's income group.]
 - **Impact**: 
-  - Rows affected: [Number]
-  - Data distribution change: [Describe any significant changes]
+  - Rows affected: [FILL OUT]
+  - Data distribution change: [Float type columns will have more complete data to be analyzed yielding better results.
+  Object type columns will have better representation and will make it easier to model and understand.]
 
 ### Issue 3: [Outliers]
-- **Cleaning Method**: [Describe your approach]
+- **Cleaning Method**: [We calculate the IQR, set the lower and upper bounds of the data, and filter the column for data that is between the upper and lower bounds.]
 - **Implementation**:
   ```python
-  # Include relevant code snippet
+  Q1 = df['population'].quantile(0.25)
+  Q3 = df['population'].quantile(0.75)
+  IQR = Q3 - Q1
+
+  lowerBound = Q1 - 1.5 * IQR
+  upperBound = Q3 + 1.5 * IQR
+
+  df['population'] = df['population'].where((df['population'] >= lowerBound) & (df['population'] <= upperBound), other=None)
   ```
-- **Justification**: [Duplicate Values]
+- **Justification**: [Dropping outliers allows better understanding and representation of data. Also, it could account for removing data points collected due to confounding variables increasing the accuracy of the dataset.]
 - **Impact**: 
-  - Rows affected: [Number]
-  - Data distribution change: [Describe any significant changes]
+  - Rows affected: [FILL OUT]
+  - Data distribution change: [The distribution of the data will be more normalized as it will not longer be accounting for extreme values which are not useful for analysis.]
 
 ### Issue 4: [Inconsistencies]
-- **Cleaning Method**: [Describe your approach]
+- **Cleaning Method**: [The income_groups and gender column include values which are inconsistent from the allowed values. Income_groups includes a view values with the suffix _typo which we replace with the accurate naming convenction.
+The gender column can only have 1 or 2 for male or female but includes the value 3 which is not consistent with the values of the column. Therefore, this needs to be dropped and replaced with 0
+so that it is understood that that information is not known/unavailable.]
 - **Implementation**:
   ```python
-  # Include relevant code snippet
+  df['income_groups'] = df['income_groups'].replace({'high_income_typo':'high_income',
+                                                   'lower_middle_income_typo':'lower_middle_income',
+                                                   'upper_middle_income_typo':'upper_middle_income'})
+
+  df['gender'] = df['gender'].replace(3.0,0.0) 
   ```
-- **Justification**: [Duplicate Values]
+- **Justification**: [Renaming values with _typo allows us to still have a complete dataset but with only valid values.
+Similarly, dropping 3s and replacing with 0s allows us to have a complete dataset without losing data but conserving only valid values.]
 - **Impact**: 
-  - Rows affected: [Number]
-  - Data distribution change: [Describe any significant changes]
+  - Rows affected: [FILL OUT]
+  - Data distribution change: [The dataset will become more coherent and complete with these changes. This would allow for more understandable data analysis.]
 
 ### Issue 5: [Impossible Dates]
 - **Cleaning Method**: [Describe your approach]

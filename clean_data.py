@@ -37,6 +37,8 @@ df['gender'] = df['gender'].replace(3.0,0.0)
 floatType = df.select_dtypes(include=['float64']).columns  # Get float columns
 df[floatType] = df[floatType].fillna(df[floatType].median()) # replace all na's with the median of the column 
 
+objectType = df.select_dtypes(include=['object']).columns # get object type column
+df[objectType] = df[floatType].fillna('unknown') # replace missing values with 'unknown' rather than NA
 
 ## Outliers
 Q1 = df['population'].quantile(0.25)
