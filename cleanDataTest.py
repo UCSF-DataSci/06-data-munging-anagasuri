@@ -1,6 +1,9 @@
 import pandas as pd
 cleanData = pd.read_csv('clean_population_data.csv')
 
+shape = cleanData.shape
+print(f"Number of rows and columns in messy dataset: {shape}") 
+
 cleanData.info()
 #      Column         Non-Null Count   Dtype  
 # ---  ------         --------------   -----  

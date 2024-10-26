@@ -240,8 +240,8 @@ have data that is based on the other data that came the row before it.]
 
 ### Dataset Overview
 - **Name**: cleaned_population_data.csv (or whatever you named it)
-- **Rows**: [Your answer]
-- **Columns**: [Your answer]
+- **Rows**: [119874]
+- **Columns**: [5]
 
 ### Column Details
 | Column Name      | Data Type   | Non-Null Count | Unique Values |  Mean         |
