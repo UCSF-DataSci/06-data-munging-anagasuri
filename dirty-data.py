@@ -13,7 +13,7 @@ rng = default_rng(seed=42)
 
 def load_data(file_path):
     """Load the original clean dataset."""
-    return pd.read_csv(file_path)
+    return pd.read_csv(file_path) 
 
 def introduce_missing_values(df, percentage=0.05):
     """Introduce missing values to the dataset."""
@@ -100,15 +100,16 @@ if __name__ == '__main__':
             pbar.update(1)
     
     # Save the messy dataset
+    
+
     df_messy.to_csv(output_file, index=False)
     print(f"\nMessy dataset saved as '{output_file}'")
 
     # Hint: Uncomment for insights
-    # print("\nClean dataset info:")
-    # print(df_clean.info())
+print("\nClean dataset info:")
+print(df_clean.info())
 
-    # print("\nMessy dataset info:")
-    # print(df_messy.info())
+print("\nMessy dataset info:")
+print(df_messy.info())
 
     # print("\nSample of messy data:")
-    # print(df_messy.sample(10))

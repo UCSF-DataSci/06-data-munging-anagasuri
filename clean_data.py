@@ -16,7 +16,6 @@ import pandas as pd
 
 ## load messy dataset using pandas
 df = pd.read_csv('messy_population_data.csv')
-print(df.shape)
 
 ## Duplicated Values
 df = df.drop_duplicates(subset=['income_groups', 'age', 'gender', 'year', 'population'], keep=False)
@@ -32,13 +31,13 @@ df['income_groups'] = df['income_groups'].replace({'high_income_typo':'high_inco
 # dropping all values that are 3 and replacing with 0
 df['gender'] = df['gender'].replace(3.0,0.0) 
 
-
 ## Missing Values
 floatType = df.select_dtypes(include=['float64']).columns  # Get float columns
 df[floatType] = df[floatType].fillna(df[floatType].median()) # replace all na's with the median of the column 
 
 objectType = df.select_dtypes(include=['object']).columns # get object type column
-df[objectType] = df[floatType].fillna('unknown') # replace missing values with 'unknown' rather than NA
+df[objectType] = df[objectType].fillna('unknown') # replace missing values with 'unknown' rather than NA
+
 
 ## Outliers
 Q1 = df['population'].quantile(0.25)
@@ -51,7 +50,6 @@ upperBound = Q3 + 1.5 * IQR
 # filtered for values between lower and upper bound of the IQR which was calculated above 
 df['population'] = df['population'].where((df['population'] >= lowerBound) & (df['population'] <= upperBound), other=None)
 
-
 ## Impossible Dates 
 df['year'] = df['year'].where(df['year'] <= 2024) # drop all years greater than 2024
 df['year'] = df['year'].ffill()
@@ -60,3 +58,4 @@ df['year'] = df['year'].ffill()
 output_file = 'clean_population_data.csv'
 df.to_csv(output_file, index=False)
 print(f"\nClean dataset saved as '{output_file}'")
+

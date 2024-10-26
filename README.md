@@ -161,7 +161,7 @@ If outliers are left in, extreme datapoints can create misleading representation
   ```
 - **Justification**: [Since these values were duplicated and we still have 1 copy of them, dropping the extra would make more sense than replacing them.]
 - **Impact**: 
-  - Rows affected: [FILL OUT]
+  - Rows affected: [2950 duplicates]
   - Data distribution change: [Removing duplicates reduces the size of the dataset. It could change statistical measures such as mean and median becuase extreme values will no longer be disproportionately represented. Categorical variables will be affected as well because the frequency of value will change. This affects the mode of that variable.]
 
 ### Issue 2: [Missing Values]
@@ -179,7 +179,7 @@ For the objec type column, income_group, we fill the missing values with 'unknow
 Similarly, when filling in the missing values of the object type column, rather than creating more NA values, we replace missing values with 'unknown' rather than incorrectly
 assuming the person's income group.]
 - **Impact**: 
-  - Rows affected: [FILL OUT]
+  - Rows affected: [30978]
   - Data distribution change: [Float type columns will have more complete data to be analyzed yielding better results.
   Object type columns will have better representation and will make it easier to model and understand.]
 
@@ -198,7 +198,7 @@ assuming the person's income group.]
   ```
 - **Justification**: [Dropping outliers allows better understanding and representation of data. Also, it could account for removing data points collected due to confounding variables increasing the accuracy of the dataset.]
 - **Impact**: 
-  - Rows affected: [FILL OUT]
+  - Rows affected: [population column affected]
   - Data distribution change: [The distribution of the data will be more normalized as it will not longer be accounting for extreme values which are not useful for analysis.]
 
 ### Issue 4: [Inconsistencies]
@@ -216,19 +216,24 @@ so that it is understood that that information is not known/unavailable.]
 - **Justification**: [Renaming values with _typo allows us to still have a complete dataset but with only valid values.
 Similarly, dropping 3s and replacing with 0s allows us to have a complete dataset without losing data but conserving only valid values.]
 - **Impact**: 
-  - Rows affected: [FILL OUT]
+  - Rows affected: [income groups and gender columns affected]
   - Data distribution change: [The dataset will become more coherent and complete with these changes. This would allow for more understandable data analysis.]
 
 ### Issue 5: [Impossible Dates]
-- **Cleaning Method**: [Describe your approach]
+- **Cleaning Method**: [Data cannot be collected for years past 2024. Therefore, all data associated with years past 2024 shoudl be dropped.]
 - **Implementation**:
   ```python
-  # Include relevant code snippet
+  df['year'] = df['year'].where(df['year'] <= 2024) 
+  df['year'] = df['year'].ffill()
   ```
-- **Justification**: [Duplicate Values]
+- **Justification**: [Since it is technically impossible to collect data from the future, we need to drop all rows with years past 2024
+so that we have an accurate dataset of data collected from 2024 and before. Instead of filling the now NA rows with ffill() allows us to
+have data that is based on the other data that came the row before it.]
 - **Impact**: 
-  - Rows affected: [Number]
-  - Data distribution change: [Describe any significant changes]
+  - Rows affected: [63238]
+  - Data distribution change: [This will give us a more realistic dataset and help with future projections if we want to see how the analysis can 
+  be useful in a diagnostic setting in the future. If we were to have included incorrect dates, we would be misrepresenting the data with any analysis
+  or models that came from this dataset.]
 
 
 ## 3. Final State Analysis
@@ -239,11 +244,17 @@ Similarly, dropping 3s and replacing with 0s allows us to have a complete datase
 - **Columns**: [Your answer]
 
 ### Column Details
-| Column Name | Data Type | Non-Null Count | #Unique Values |  Mean  |
-|-------------|-----------|----------------|----------------|--------|
-| [Column 1]  | [Type]    | [Count]        | [#Unique]      | [Mean] |
-| ...         | ...       | ...            | ...            | ...    |
+| Column Name      | Data Type   | Non-Null Count | Unique Values |  Mean         |
+|------------------|-------------|----------------|---------------|---------------|
+| [income_groups]  | [Object]    | [119874]       | [6]           | [0]           |
+| [age]            | [float64]   | [119874]       | [101]         | [49.986903]   |
+| [gender]         | [float64]   | [119874]       | [3]           | [1.398001]    |
+| [year]           | [float64]   | [119874]       | [75]          | [2005.433981] |
+| [population]     | [float64]   | [116388]       | [108794]      | [8.881248e+06]|
 
 ### Summary of Changes
-- [List major changes made to the dataset]
-- [Discuss any significant changes in data distribution]
+- [Major Changes made: duplicated values were dropped in all columns, naming convention inconsistencies were dealth with through renaming and imputing, 
+missing values were imputed by median values if float variable or filled with unknown for object variable, outliers were removed for more accurate analysis,
+impossible dates listed from past 2024 were removed and filled with dates of preceding rows for more accurate representation of the data.]
+- [The number of unique values decreased for all columns due to removing duplicate values. The means also dropped slightly becuase
+incorrect data was either removed or redone. Non-null counts increased siginificantly after missing values were imputed.]
